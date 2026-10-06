@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI , HTTPException
+from fastapi import FastAPI , Depends , HTTPException
 from pydantic import BaseModel
 
 from sqlalchemy import create_engine, Column, Integer, String, Text, Date
@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from datetime import date
 
 
-engine = create_engine("mysql+pymysql://root:password@localhost:3306/research_portal")
+engine = create_engine("mysql+pymysql://root@localhost:3306/research_portal")
 LocalSession = sessionmaker(bind=engine)
 
 Base = declarative_base()
@@ -34,7 +34,7 @@ app = FastAPI()
 
  
 class OpportunityIn(BaseModel):
-    
+
     title: str
     description: str
     research_area: str
@@ -46,6 +46,36 @@ class OpportunityIn(BaseModel):
     status: str = "Open"
 
 
+def session_generation():
+
+    db = LocalSession()
+    try : 
+        yield db
+    finally : 
+        db.close()
+
+
+
+@app.post("/opportunities")
+def create(data:OpportunityIn , db = Depends(session_generation)):
+
+    if (data.status != "Open") and (data.status != "Close"):
+        raise HTTPException (
+            status_code=400 , 
+            detail= "This is a Client Side error , The client did not enter the correct status for the research opportunity  "
+        )
+    
+
+    new_opportunities = Opportunity(title = data.title , description = data.description ,research_area = data.research_area , 
+                                    faculty_name = data.faculty_name , department = data.department 
+                                     , required_skills = data.required_skills , available_positions = data.available_positions ,
+                                      application_deadline = data.application_deadline , status = data.status ) 
+
+    db.add(new_opportunities)
+    db.commit()
+    return {
+        "message " : " 201 , Research Entery Posted Successfully! "
+    }
 
 
 
