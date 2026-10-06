@@ -129,3 +129,34 @@ def find(id : int , db = Depends(session_generation)):
     }
 
 
+@app.put("/opportunity/{id}")
+def update(id : int , data : OpportunityIn , db = Depends(session_generation)):
+
+
+    finding = db.query(Opportunity).filter(Opportunity.id == id ).first()
+
+    if finding is None : 
+        raise HTTPException (
+            status_code = 404 , 
+            detail = " ID not found " 
+        )
+
+    finding.title = data.title
+    finding.description = data.description
+    finding.research_area = data.research_area
+    finding.faculty_name = data.faculty_name
+    finding.department = data.department
+    finding.required_skills = data.required_skills
+    finding.available_positions = data.available_positions
+    finding.application_deadline = data.application_deadline
+    finding.status = data.status 
+
+    db.commit() 
+
+    return {
+        "Status Code " : 200  , 
+        "Content" : "Record {id} updated "
+    }
+
+
+    
