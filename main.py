@@ -155,8 +155,26 @@ def update(id : int , data : OpportunityIn , db = Depends(session_generation)):
 
     return {
         "Status Code " : 200  , 
-        "Content" : "Record {id} updated "
+        "Content" : f"Record {id} updated "
     }
 
 
-    
+@app.delete("/opportunity/{id}")
+def Remove(id : int , db = Depends(session_generation)):
+
+    lookup = db.query(Opportunity).filter(Opportunity.id == id).first() 
+    # Basically for deletion , we first need to find the exact record that the user wants to delete 
+
+    if lookup is None : 
+        raise HTTPException (
+            status_code = 404, 
+            details = "The Opportunity for the particular ID does not exist"
+        )
+
+    db.delete(lookup)
+    db.commit()
+
+    return {
+        "Status Code " : 200 , 
+        "Message " : f"Opportunity {id} is sucessfully removed.  "
+    }
