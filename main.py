@@ -71,6 +71,10 @@ def create(data:OpportunityIn , db = Depends(session_generation)):
                                      , required_skills = data.required_skills , available_positions = data.available_positions ,
                                       application_deadline = data.application_deadline , status = data.status ) 
 
+    #this setups the new row the client is inserting in our databse server via parameters given by the client
+
+    # the db.add actually adds it to the database 
+    # db.commit , commits or saves the changes to the table of the database 
     db.add(new_opportunities)
     db.commit()
     return {
@@ -79,7 +83,36 @@ def create(data:OpportunityIn , db = Depends(session_generation)):
 
 
 
+@app.get("/opportunities/{id}")
+def find(id : int , db = Depends(session_generation)):
 
+
+    found_opportunity = db.query(Opportunity).filter(Opportunity.id == id ).first() 
+
+    #this means to search the table (Opportunity) and filter only those id(s) 
+    # which match the users given ID
+    # .first() means that give only the first matching result
+    
+    if found_opportunity is None :
+        raise HTTPException(
+            status_code = 404 ,
+            detail = "Opportunity ID not found"
+            )
+
+    return {
+
+        "Opportunity ID  " : found_opportunity.id , 
+        "Title" : found_opportunity.title , 
+        "Description": found_opportunity.description ,
+        "Research Area " : found_opportunity.research_area ,
+        "Faculty Name" : found_opportunity.faculty_name ,
+        "Department" : found_opportunity.department ,
+        "Required Skills" : found_opportunity.required_skills , 
+        "Available Positions" : found_opportunity.available_positions , 
+        "Application Deadline" : found_opportunity.application_deadline , 
+        "Status" : found_opportunity.status
+
+    }
 
 
 
