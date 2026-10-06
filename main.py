@@ -82,6 +82,19 @@ def create(data:OpportunityIn , db = Depends(session_generation)):
     }
 
 
+@app.get("/opportunities")
+def show_all(db = Depends(session_generation)):
+
+    All_opportunities = db.query(Opportunity).all() 
+    #This will show all the opportunities that are on the server's table or database 
+
+    return {
+        "Status Code " : 200 , 
+        "Opportunities " : All_opportunities
+    }
+
+
+
 
 @app.get("/opportunities/{id}")
 def find(id : int , db = Depends(session_generation)):
@@ -101,6 +114,7 @@ def find(id : int , db = Depends(session_generation)):
 
     return {
 
+        "Status Code " : 200 ,
         "Opportunity ID  " : found_opportunity.id , 
         "Title" : found_opportunity.title , 
         "Description": found_opportunity.description ,
@@ -113,8 +127,5 @@ def find(id : int , db = Depends(session_generation)):
         "Status" : found_opportunity.status
 
     }
-
-
-
 
 
