@@ -8,12 +8,17 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 from datetime import date
 
-
+# Data base access
 engine = create_engine("mysql+pymysql://root@localhost:3306/research_portal")
+
+# This will develop a session between the database and our python file 
 LocalSession = sessionmaker(bind=engine)
 
+# SQLAlchmey uses base class to refer to the table to make create , change or make updation in its table or database
 Base = declarative_base()
 
+
+# This is for our python file to identify the correct table in the database 
 class Opportunity(Base):
 
     __tablename__ = "research_opportunities"
@@ -32,7 +37,7 @@ class Opportunity(Base):
 
 app = FastAPI()
 
- 
+ # Schema created using Pydantic Base model class , for data verification when client sends a request 
 class OpportunityIn(BaseModel):
 
     title: str
@@ -46,11 +51,16 @@ class OpportunityIn(BaseModel):
     status: str = "Open"
 
 
+
+# This function generates each session needed for adding new rows , updating existing rows , or deleting them 
+# db is a varible that holds the session , the "Depends()" function calls this function
+
 def session_generation():
 
     db = LocalSession()
     try : 
-        yield db
+        yield db    # "yield "  pauses a function and sends a value back to the code,  
+                    # but keeps the function alive so it can pick up right where it left off next time
     finally : 
         db.close()
 
@@ -78,7 +88,10 @@ def create(data:OpportunityIn , db = Depends(session_generation)):
     db.add(new_opportunities)
     db.commit()
     return {
-        "message " : " 201 , Research Entery Posted Successfully! "
+        "Status Code" : " 201  " ,
+        "Message" : "OK" , 
+        "Messgae" : "Opportunity Suceessfully Created"
+
     }
 
 
@@ -90,6 +103,7 @@ def show_all(db = Depends(session_generation)):
 
     return {
         "Status Code " : 200 , 
+        "Message" : "OK" , 
         "Opportunities " : All_opportunities
     }
 
@@ -115,6 +129,8 @@ def find(id : int , db = Depends(session_generation)):
     return {
 
         "Status Code " : 200 ,
+        "Message" : "OK" , 
+
         "Opportunity ID  " : found_opportunity.id , 
         "Title" : found_opportunity.title , 
         "Description": found_opportunity.description ,
