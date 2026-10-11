@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lav: #e3c9ff;
+  --font-sans: "Figtree", system-ui, sans-serif;
+  --font-display: "EB Garamond", Georgia, serif;
+}
+
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@layer base {
+  html { color-scheme: dark; }
+  body {
+    @apply font-sans text-white antialiased;
+    background: radial-gradient(60rem 28rem at 50% -8%, rgba(213, 104, 219, 0.422), transparent), #000000;
+    background-attachment: fixed;
+  }
+  /* subtle grain texture */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .08; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  #root { position: relative; z-index: 1; }
+  button { @apply cursor-pointer; }
+  ::placeholder { color: rgba(255, 255, 255, .5); }
+}
+
+@layer components {
+  .fade { animation: fade .25s ease both; }
+  .glass { @apply border border-white/20 bg-white/10 backdrop-blur-md; }
+  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-5 py-2 text-sm font-medium text-white transition hover:bg-white/20 active:scale-[.98] disabled:opacity-60; }
+  .btn-sm { @apply px-3.5 py-1.5 text-xs; }
+  .btn-primary { @apply border-lav/60 bg-lav/25 hover:bg-lav/35; }
+  .btn-danger { @apply border-white bg-white text-red-600 hover:bg-white/90; }
+  .pill { @apply rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition hover:text-white; }
+  .pill-on { @apply bg-white/20 text-white; }
+  .card { @apply flex flex-col rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm transition duration-200 hover:-translate-y-0.5 hover:bg-white/15; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs text-white/80; }
+  .badge { @apply shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium; }
+  .badge-open { @apply border-lav/60 bg-lav/25 text-white; }
+  .badge-closed { @apply border-white/20 bg-white/5 text-white/60; }
+  .input { @apply block w-full rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm text-white outline-none transition focus:border-white/70 focus:ring-4 focus:ring-white/10; }
+  .input-bad { border-color: #ffb4ab; }
+}
