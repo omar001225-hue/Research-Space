@@ -11,19 +11,25 @@ Python — backend
 Node.js and npm — frontend
 Visual Studio Code — development environment
 Project Structure
+
 Research-Space/
+
 ├── backend/
+
 │   ├── main.py
 │   ├── run.py
 │   ├── requirements.txt
 │   └── research_opportunities.sql
+
 ├── frontend/
 │   ├── src/
 │   ├── package.json
 │   └── package-lock.json
 ├── .gitignore
 └── README.md
+
 Setup and Run Instructions
+
 1. Download the Project
 Clone the repository:
 
